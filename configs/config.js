@@ -12,5 +12,14 @@ module.exports = {
         controller : dir+"/app/controllers",
         view       : dir+"/app/views",
     },
-    staticDir :[]
+    staticDir :[
+        {
+            route     : "/",
+            directory : "public" 
+        },
+        {
+            route     : "/storage",
+            directory : "storage"
+        }
+    ]
 }
