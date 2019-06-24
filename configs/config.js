@@ -15,11 +15,11 @@ module.exports = {
     staticDir :[
         {
             route     : "/",
-            directory : "public" 
+            directory : dir+"/public" 
         },
         {
             route     : "/storage",
-            directory : "storage"
+            directory : dir+"/storage"
         }
     ]
 }
