@@ -7,8 +7,7 @@ const Config = require(`../../configs/config.js`);
 const Home = require(`${Config.dir.controller}/HomeController.js`);
 
 
-module.exports = function(express){
-    const app = express.Router();
+module.exports = function(app){
     
     app.get('/', Home.index);
     app.post('/upload', Home.upload);

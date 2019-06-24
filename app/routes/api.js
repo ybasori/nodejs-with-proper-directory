@@ -8,8 +8,7 @@ const Upload = require(`${Config.dir.controller}/api/UploadController.js`);
 
 
 
-module.exports = function(express){
-    const app = express.Router();
+module.exports = function(app){
 
     app.post("/v1/upload", Upload.upload);
 

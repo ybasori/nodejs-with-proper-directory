@@ -27,8 +27,8 @@ for( var i = 0; i < Config.staticDir.length; i++ ){
 
 
 // LISTED IN ROUTES
-const routes_web     = require(`${__dirname}/app/routes/web.js`)(express);
-const routes_api     = require(`${__dirname}/app/routes/api.js`)(express);
+const routes_web     = require(`${__dirname}/app/routes/web.js`)(express.Router());
+const routes_api     = require(`${__dirname}/app/routes/api.js`)(express.Router());
 const middleware     = require(`${__dirname}/app/middlewares/web_middleware.js`);
 const middleware_api = require(`${__dirname}/app/middlewares/api_middleware.js`);
 app.use('/', middleware, routes_web);
