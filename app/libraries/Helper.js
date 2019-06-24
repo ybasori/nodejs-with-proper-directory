@@ -1,7 +1,7 @@
 const Config = require(`../../configs/config.js`);
 
 module.exports = {
-    base_url: function(uri=null){
+    baseUrl: function(uri=null){
 
         // ^\/+   beginning of the string, pipe, one or more times
         // |      or
@@ -11,7 +11,7 @@ module.exports = {
 
         var port = ((Config.port==null || Config.port== 80)?"":":"+Config.port)
 
-        var base_url = Config.base_url + port;
+        var base_url = Config.baseUrl + port;
         
         return base_url+"/"+uri;
     }
