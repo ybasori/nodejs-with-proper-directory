@@ -1,0 +1,25 @@
+<html>
+    <head></head>
+    <body>
+        <div id="stream">
+            <img id="result" />
+            <div id="time"></div>
+        </div>
+        <div id="recorded">
+
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script>
+            var socket = io.connect("http://103.28.52.114:3000");
+            var device_id = "-LhcedV_9_NOlNs9flKM";
+            socket.on(device_id, function(res){
+                $("#result").attr("src","/storage/"+res.image);
+                $("#time").html(new Date(res.time));
+            });
+            socket.on(device_id+"-recorded", function(res){;
+                console.log(res);
+            });
+        </script>
+    </body>
+</html>
