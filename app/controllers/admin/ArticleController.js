@@ -3,6 +3,7 @@
 const Config = require(`../../../configs/config.js`);
 const Helper = require(`../../libraries/Helper.js`);
 const Validator = require(`../../libraries/Validator.js`);
+const Article = require(`${Config.dir.model}/Article.js`);
 
 module.exports = {
     index: function (req, res) {
@@ -38,15 +39,19 @@ module.exports = {
                 label: "Title",
                 required: true
             },
+            slug: {
+                label: "Slug",
+                required: true
+            },
             thumbnail: {
                 label: "Thumbnail",
                 required: true
             },
-            metaKeyword: {
+            meta_keyword: {
                 label: "Meta Keyword",
                 required: true
             },
-            metaDescription: {
+            meta_description: {
                 label: "Meta Description",
                 required: true
             },
@@ -63,7 +68,19 @@ module.exports = {
             });
         }
         else{
-            return res.status(200).json(req.body);
+            Article.create(req.body, function(err, result, fields){
+                if(err){
+                    return res.status(500).json({
+                        msg: "Internal server error",
+                        data: err
+                    });
+                }
+                else{
+                    return res.status(200).json({
+                        msg: "Successfully Saved!" 
+                    });
+                }
+            });
         }
 
 

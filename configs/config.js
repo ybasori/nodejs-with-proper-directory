@@ -9,8 +9,9 @@ module.exports = {
         public     : dir+"/public",
         storage    : dir+"/storage",
         app        : dir+"/app",
-        controller : dir+"/app/controllers",
+        model      : dir+"/app/models",
         view       : dir+"/app/views",
+        controller : dir+"/app/controllers",
     },
     staticDir :[
         {

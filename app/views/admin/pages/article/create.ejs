@@ -17,6 +17,8 @@
     <script src="/jquery/dist/jquery.min.js"></script>
     <script src="/popper.js/dist/umd/popper.min.js"></script>
     <script src="/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script src="/js/global.js"></script>
 </head>
 <body>
     <div class="container">
@@ -43,15 +45,21 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label for="" class="col-md-3 col-form-label">Slug</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" id="" value="" name="slug">
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="" class="col-md-3 col-form-label">Meta Keyword</label>
                         <div class="col-md-9">
-                            <input type="text" class="form-control" id="" value="" name="metaKeyword">
+                            <input type="text" class="form-control" id="" value="" name="meta_keyword">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-3 col-form-label">Meta Description</label>
                         <div class="col-md-9">
-                            <input type="text" class="form-control" id="" value="" name="metaDescription">
+                            <input type="text" class="form-control" id="" value="" name="meta_description">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -75,6 +83,9 @@
             $("#form").on("submit", function(e){
                 e.preventDefault();
 
+                
+                $(".error").remove();
+
                 $.ajax({
 					url: "<%= linkTo.createArticle %>",
 					type: "POST",
@@ -88,8 +99,15 @@
 					success: function(data){
                         
 					},
-					error: function(){
-                        
+					error: function(xhr){
+                        let errors = validator.render(xhr);
+                        for(var key in errors){
+                            var html=``;
+                            for(var i=0;i<errors[key].length; i++){
+                                html=html+`<li>${errors[key][i]}</li>`;
+                            }
+                            $(`[name="${key}"]`).parent().append(`<div class="error alert alert-danger"><ul>${html}</ul></div>`);
+                        }
 					}
 				});
             });

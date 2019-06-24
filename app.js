@@ -43,8 +43,11 @@ app.use('/', middleware, routes_web);
 
 
 // RUN SERVER
+const db           = require(`${__dirname}/app/libraries/Db.js`);
 const port           = Number(process.env.PORT || Config.port);
-http.listen(port, function(){ console.log('listening on *:'+port); });
+db.connect(function(){
+    http.listen(port, function(){ console.log('listening on *:'+port); });
+});
 
 
 
