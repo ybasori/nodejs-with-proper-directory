@@ -11,19 +11,8 @@ module.exports = {
 
 
         var data = {
-            csrfToken: req.csrfToken()
-        }
-
-
-
-        return res.render(`${Config.dir.view}/pages/home/index`, data);
-    },
-    create: function (req, res) {
-
-
-
-        var data = {
             csrfToken: req.csrfToken(),
+            layout: `${Config.dir.view}/admin/layouts/basic`,
             linkTo: {
                 createArticle: Helper.baseUrl('/create')
             }
@@ -31,7 +20,23 @@ module.exports = {
 
 
 
-        return res.render(`${Config.dir.view}/admin/pages/article/create`, data);
+        return res.render(`${Config.dir.view}/admin/pages/article/index`, data);
+    },
+    create: function (req, res) {
+
+
+
+        var data = {
+            csrfToken: req.csrfToken(),
+            layout: `${Config.dir.view}/admin/layouts/basic`,
+            linkTo: {
+                createArticle: Helper.baseUrl('/create')
+            }
+        }
+
+
+
+        return res.render(`${Config.dir.view}/admin/pages/article/create-edit`, data);
     },
     store: function(req, res){
         var rules = {
@@ -68,7 +73,7 @@ module.exports = {
             });
         }
         else{
-            Article.create(req.body, function(err, result, fields){
+            Article.save(req.body, function(err, result, fields){
                 if(err){
                     return res.status(500).json({
                         msg: "Internal server error",

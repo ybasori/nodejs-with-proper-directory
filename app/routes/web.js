@@ -17,7 +17,7 @@ module.exports = function(app){
 
         app.use('/articles', (function(){
 
-
+            app.get('/', AdminArticle.index);
             app.route('/create')
                 .get(AdminArticle.create)
                 .post(AdminArticle.store);
