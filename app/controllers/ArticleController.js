@@ -1,8 +1,8 @@
 
 // EXTRAS
-const Config = require(`../../../configs/config.js`);
-const Helper = require(`../../libraries/Helper.js`);
-const Validator = require(`../../libraries/Validator.js`);
+const Config = require(`../../configs/config.js`);
+const Helper = require(`../libraries/Helper.js`);
+const Validator = require(`../libraries/Validator.js`);
 const Article = require(`${Config.dir.model}/Article.js`);
 
 module.exports = {
@@ -11,10 +11,10 @@ module.exports = {
 
         var data = {
             csrfToken: req.csrfToken(),
-            layout: `${Config.dir.view}/admin/layouts/basic`,
+            layout: `${Config.dir.view}/layouts/basic`,
             linkTo: {
-                createArticle: Helper.baseUrl('/admin/articles/create'),
-                listArticle: Helper.baseUrl('/admin/articles')
+                createArticle: Helper.baseUrl('/articles/create'),
+                listArticle: Helper.baseUrl('/articles')
             }
         }
 
@@ -28,7 +28,7 @@ module.exports = {
         await Article.getAll("id, title", limit, offset).then(function(result){ data.articles = result; });
 
 
-        return res.render(`${Config.dir.view}/admin/pages/article/index`, data);
+        return res.render(`${Config.dir.view}/pages/article/index`, data);
         
     },
     create: async function (req, res) {
@@ -37,43 +37,55 @@ module.exports = {
 
         var data = {
             csrfToken: req.csrfToken(),
-            layout: `${Config.dir.view}/admin/layouts/basic`,
+            layout: `${Config.dir.view}/layouts/basic`,
             linkTo: {
-                createArticle: Helper.baseUrl('/admin/articles/create'),
-                listArticle: Helper.baseUrl('/admin/articles')
+                createArticle: Helper.baseUrl('/articles/create'),
+                listArticle: Helper.baseUrl('/articles')
             }
         }
 
 
 
-        return res.render(`${Config.dir.view}/admin/pages/article/create-edit`, data);
+        return res.render(`${Config.dir.view}/pages/article/create-edit`, data);
     },
     store: async function(req, res){
         var rules = {
             title: {
                 label: "Title",
-                required: true
+                rule :{
+                    required: true
+                }
             },
             slug: {
                 label: "Slug",
-                required: true,
-                unique: "articles,slug"
+                rule: {
+                    required: true,
+                    unique: "articles,slug"
+                }
             },
             thumbnail: {
                 label: "Thumbnail",
-                required: true
+                rule: {
+                    required: true
+                }
             },
             meta_keyword: {
                 label: "Meta Keyword",
-                required: true
+                rule:{
+                    required: true
+                }
             },
             meta_description: {
                 label: "Meta Description",
-                required: true
+                rule: {
+                    required: true
+                }
             },
             content: {
                 label: "Content",
-                required: true
+                rule: {
+                    required: true
+                }
             }
         }
 
@@ -103,43 +115,55 @@ module.exports = {
         var id = req.params.id;
         var data = {
             csrfToken: req.csrfToken(),
-            layout: `${Config.dir.view}/admin/layouts/basic`,
+            layout: `${Config.dir.view}/layouts/basic`,
             linkTo: {
-                editArticle: Helper.baseUrl('/admin/articles/'+id),
-                listArticle: Helper.baseUrl('/admin/articles')
+                editArticle: Helper.baseUrl('/articles/'+id),
+                listArticle: Helper.baseUrl('/articles')
             }
         }
         await Article.getById("*", id).then(function (result){ data.article = result[0]; });
         
-        return res.render(`${Config.dir.view}/admin/pages/article/create-edit`, data);
+        return res.render(`${Config.dir.view}/pages/article/create-edit`, data);
     },
     update: async function(req, res){
         var id = req.params.id;
         var rules = {
             title: {
                 label: "Title",
-                required: true
+                rule: {
+                    required: true
+                }
             },
             slug: {
                 label: "Slug",
-                required: true,
-                unique: "articles,slug,"+req.params.id+",id"
+                rule:{
+                    required: true,
+                    unique: "articles,slug,"+req.params.id+",id"
+                }
             },
             thumbnail: {
                 label: "Thumbnail",
-                required: true
+                rule: {
+                    required: true
+                }
             },
             meta_keyword: {
                 label: "Meta Keyword",
-                required: true
+                rule:{
+                    required: true
+                }
             },
             meta_description: {
                 label: "Meta Description",
-                required: true
+                rule: {
+                    required: true
+                }
             },
             content: {
                 label: "Content",
-                required: true
+                rule: {
+                    required: true
+                }
             }
         }
 

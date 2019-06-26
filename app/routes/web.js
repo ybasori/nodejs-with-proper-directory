@@ -4,14 +4,12 @@
 const Config = require(`../../configs/config.js`);
 
 // CONTROLLERS
-const Home = require(`${Config.dir.controller}/HomeController.js`);
-const AdminArticle = require(`${Config.dir.controller}/admin/ArticleController.js`);
+const AdminArticle = require(`${Config.dir.controller}/ArticleController.js`);
 
 
 module.exports = function(app){
     
 
-    app.use('/admin', (function(){
 
 
 
@@ -37,15 +35,6 @@ module.exports = function(app){
             return app
         })());
 
-
-
-        return app
-    })());
-
-    app.get('/', Home.index);
-    app.post('/', Home.post);
-    app.post('/upload', Home.upload);
-    app.get('/list', Home.list);
 
     return app;
 }

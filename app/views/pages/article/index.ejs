@@ -1,11 +1,11 @@
-<%- include(layout + '/start') %>
+<%- include(layout + '/start', { title: 'Articles' }) %>
     <meta name="csrf-token" content="<%= csrfToken %>">
 <%- include(layout + '/content') %>
     <div class="row">
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-3">
-                    <a href="/admin/articles/create" class="btn btn-secondary">New</a>
+                    <a href="<%= linkTo.createArticle %>" class="btn btn-secondary">New</a>
                 </div>
             </div>
             <% articles.forEach( article =>{ %>
@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-md-3"><%= article.title %></div>
                 <div class="col-md-3">
-                        <a href="/admin/articles/<%= article.id %>" class="btn btn-secondary">Edit</a>
+                        <a href="<%= linkTo.listArticle %>/<%= article.id %>" class="btn btn-secondary">Edit</a>
                         <button type="button" class="btn btn-secondary btn-delete" data-id="<%= article.id %>">Delete</button>
                 </div>
             </div>
@@ -36,7 +36,7 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        url: "/admin/articles/"+id,
+                        url: "<%= linkTo.listArticle %>/"+id,
                         type: "DELETE",
                         data: (function(){
                             var formdata = new FormData();

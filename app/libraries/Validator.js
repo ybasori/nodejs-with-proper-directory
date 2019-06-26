@@ -18,11 +18,11 @@ module.exports={
             var label = (rule.label == null || rule.label == undefined || rule.label == "") ? key : rule.label ;
 
             var noRule = 0;
-            for(var keyRule in rule){
+            for(var keyRule in rule.rule){
 
                 if(keyRule == "required"){
 
-                    if(rule[keyRule]){
+                    if(rule.rule[keyRule]){
                         if(body[key] == null || body[key] == undefined || body[key] == ""){
                             if(noRule == 0){
                                 err_msg[key] = [];
@@ -36,8 +36,8 @@ module.exports={
                 }
                 else if(keyRule=="unique"){
 
-                    if(rule[keyRule]){
-                        var uniqueRule=rule[keyRule].split(",");
+                    if(rule.rule[keyRule]){
+                        var uniqueRule=rule.rule[keyRule].split(",");
                         var table = uniqueRule[0];
                         var column = uniqueRule[1];
                         var ignoreId = null;
