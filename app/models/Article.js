@@ -16,10 +16,13 @@ module.exports={
     getById: function(select, id, cb){
         db.query(`SELECT ${select} FROM ${table_article} WHERE id="${id}" LIMIT 1`, cb);
     },
-    update: function(data, id, cb){
+    updateById: function(data, id, cb){
         data.updated_at = dt.now();
         delete data._csrf;
         db.query(`UPDATE ${table_article} SET ? WHERE id='${id}'`, data, cb);
 
+    },
+    deleteById: function(id, cb){
+        db.query(`DELETE FROM ${table_article} WHERE id='${id}'`, cb);
     }
 }

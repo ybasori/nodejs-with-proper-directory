@@ -166,7 +166,7 @@ module.exports = {
             });
         }
         else{
-            Article.update(req.body, id, function(err, result, fields){
+            Article.updateById(req.body, id, function(err, result, fields){
                 if(err){
                     return res.status(500).json({
                         msg: "Internal server error",
@@ -180,5 +180,23 @@ module.exports = {
                 }
             });
         }
+    },
+    delete: function(req, res){
+        var id = req.params.id;
+
+        Article.deleteById(id, function(err, result, fields){
+
+            if(err){
+                return res.status(500).json({
+                    msg: "Internal server error",
+                    data: err
+                });
+            }
+            else{
+                return res.status(200).json({
+                    msg: "Successfully Deleted!" 
+                });
+            }
+        });
     }
 }

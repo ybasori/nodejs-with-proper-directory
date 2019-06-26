@@ -27,7 +27,8 @@ module.exports = function(app){
 
             app.route('/:id(\\d{0,})')
                 .get(AdminArticle.edit)
-                .put(AdminArticle.update);
+                .put(AdminArticle.update)
+                .delete(AdminArticle.delete);
 
             
 
