@@ -20,56 +20,50 @@ module.exports={
             var noRule = 0;
             for(var keyRule in rule){
 
-                switch (keyRule) {
+                if(keyRule == "required"){
 
+                    if(rule[keyRule]){
+                        if(body[key] == null || body[key] == undefined || body[key] == ""){
+                            if(noRule == 0){
+                                err_msg[key] = [];
+                            }
+                            err_msg[key].push(`${label} is required.`);
+                            noRule++;
+                            error++;
+                        }
+                    }
 
+                }
+                else if(keyRule=="unique"){
 
-                    case "required":
-                        if(rule[keyRule]){
-                            if(body[key] == null || body[key] == undefined || body[key] == ""){
+                    if(rule[keyRule]){
+                        var uniqueRule=rule[keyRule].split(",");
+                        var table = uniqueRule[0];
+                        var column = uniqueRule[1];
+                        var ignoreId = null;
+                        var ignoreIdColumn = "id";
+                        if(uniqueRule[2]!=undefined){
+                            ignoreId = uniqueRule[2];
+                        }
+                        if(uniqueRule[3]!=undefined){
+                            ignoreIdColumn = uniqueRule[3];
+                        }
+                        await uniqueness(table, column, body[key], ignoreId, ignoreIdColumn).then(function(res){
+                            if(res[0]){
                                 if(noRule == 0){
                                     err_msg[key] = [];
                                 }
-                                err_msg[key].push(`${label} is required.`);
+                                err_msg[key].push(`${label} is already in use.`);
                                 noRule++;
                                 error++;
                             }
-                        }
-                    break;
+                        });
 
-                    case "unique":
-                        if(rule[keyRule]){
-                            var uniqueRule=rule[keyRule].split(",");
-                            var table = uniqueRule[0];
-                            var column = uniqueRule[1];
-                            var ignoreId = null;
-                            var ignoreIdColumn = "id";
-                            if(uniqueRule[2]!=undefined){
-                                ignoreId = uniqueRule[2];
-                            }
-                            if(uniqueRule[3]!=undefined){
-                                ignoreIdColumn = uniqueRule[3];
-                            }
-                            await uniqueness(table, column, body[key], ignoreId, ignoreIdColumn).then(function(res){
-                                if(res[0]){
-                                    if(noRule == 0){
-                                        err_msg[key] = [];
-                                    }
-                                    err_msg[key].push(`${label} is already in use.`);
-                                    noRule++;
-                                    error++;
-                                }
-                            });
-
-                        }
-                    break;
-
-                    default:
-                        continue;
-                    break;
-
-
-                
+                    }
+                    
+                }
+                else{
+                    continue;
                 }
 
             }
