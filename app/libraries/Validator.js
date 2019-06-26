@@ -1,5 +1,16 @@
+const db = require(`../libraries/Db.js`);
+
+const uniqueness = async function(table, column, value, ignoreId=null, ignoreIdColumn=null){
+    var algo = ""
+    if(ignoreId!=null){
+        algo = algo + ' AND ' + ignoreIdColumn + ' != "' + ignoreId + '"';
+    }
+    return await db.query('select * from '+table+' where '+column+'="'+value+'" '+algo+' limit 1');
+}
+
+
 module.exports={
-    make: function(body, rules){
+    make: async function(body, rules){
         let error =0;
         let err_msg ={};
         for(var key in rules){
@@ -25,6 +36,34 @@ module.exports={
                             }
                         }
                     break;
+
+                    case "unique":
+                        if(rule[keyRule]){
+                            var uniqueRule=rule[keyRule].split(",");
+                            var table = uniqueRule[0];
+                            var column = uniqueRule[1];
+                            var ignoreId = null;
+                            var ignoreIdColumn = "id";
+                            if(uniqueRule[2]!=undefined){
+                                ignoreId = uniqueRule[2];
+                            }
+                            if(uniqueRule[3]!=undefined){
+                                ignoreIdColumn = uniqueRule[3];
+                            }
+                            await uniqueness(table, column, body[key], ignoreId, ignoreIdColumn).then(function(res){
+                                if(res[0]){
+                                    if(noRule == 0){
+                                        err_msg[key] = [];
+                                    }
+                                    err_msg[key].push(`${label} is already in use.`);
+                                    noRule++;
+                                    error++;
+                                }
+                            });
+
+                        }
+                    break;
+
                     default:
                         continue;
                     break;

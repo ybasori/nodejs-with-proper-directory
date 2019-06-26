@@ -6,7 +6,7 @@ const Validator = require(`../../libraries/Validator.js`);
 const Article = require(`${Config.dir.model}/Article.js`);
 
 module.exports = {
-    index: function (req, res) {
+    index: async function (req, res) {
 
 
         var data = {
@@ -18,26 +18,20 @@ module.exports = {
             }
         }
 
+
+
+
         var limit = 5;
         var page = 1;
         var offset = Helper.offset(limit,page);
 
+        await Article.getAll("id, title", limit, offset).then(function(result){ data.articles = result; });
 
-        Article.getAll("id, title", limit, offset, function(err, result, fields){
 
-            if(err) throw err;
-
-            if(!err){
-
-                data.articles = result;
-                return res.render(`${Config.dir.view}/admin/pages/article/index`, data);
-
-            }
-
-        });
+        return res.render(`${Config.dir.view}/admin/pages/article/index`, data);
         
     },
-    create: function (req, res) {
+    create: async function (req, res) {
 
 
 
@@ -54,7 +48,7 @@ module.exports = {
 
         return res.render(`${Config.dir.view}/admin/pages/article/create-edit`, data);
     },
-    store: function(req, res){
+    store: async function(req, res){
         var rules = {
             title: {
                 label: "Title",
@@ -62,7 +56,8 @@ module.exports = {
             },
             slug: {
                 label: "Slug",
-                required: true
+                required: true,
+                unique: "articles,slug"
             },
             thumbnail: {
                 label: "Thumbnail",
@@ -82,32 +77,29 @@ module.exports = {
             }
         }
 
-        let validator = Validator.make(req.body, rules);
+        let validator = await Validator.make(req.body, rules);
         if(validator.fails()){
             return res.status(400).json({
                 errors: validator.getMessages()
             });
         }
         else{
-            Article.save(req.body, function(err, result, fields){
-                if(err){
-                    return res.status(500).json({
-                        msg: "Internal server error",
-                        data: err
-                    });
-                }
-                else{
-                    return res.status(200).json({
-                        msg: "Successfully Saved!" 
-                    });
-                }
+            await Article.save(req.body).then(function(result){
+                return res.status(200).json({
+                    msg: "Successfully Saved!" 
+                });
+            }).catch(function(err){
+                return res.status(500).json({
+                    msg: "Internal server error",
+                    data: err
+                });
             });
         }
 
 
         
     },
-    edit: function(req, res){
+    edit: async function(req, res){
         var id = req.params.id;
         var data = {
             csrfToken: req.csrfToken(),
@@ -117,20 +109,11 @@ module.exports = {
                 listArticle: Helper.baseUrl('/admin/articles')
             }
         }
-        Article.getById("*", id, function(err, result, fields){
-
-            if(err) throw err;
-
-            if(!err){
-
-                data.article = result[0];
-                return res.render(`${Config.dir.view}/admin/pages/article/create-edit`, data);
-
-            }
-
-        });
+        await Article.getById("*", id).then(function (result){ data.article = result[0]; });
+        
+        return res.render(`${Config.dir.view}/admin/pages/article/create-edit`, data);
     },
-    update: function(req, res){
+    update: async function(req, res){
         var id = req.params.id;
         var rules = {
             title: {
@@ -139,7 +122,8 @@ module.exports = {
             },
             slug: {
                 label: "Slug",
-                required: true
+                required: true,
+                unique: "articles,slug,"+req.params.id+",id"
             },
             thumbnail: {
                 label: "Thumbnail",
@@ -159,44 +143,39 @@ module.exports = {
             }
         }
 
-        let validator = Validator.make(req.body, rules);
+        let validator = await Validator.make(req.body, rules);
         if(validator.fails()){
             return res.status(400).json({
                 errors: validator.getMessages()
             });
         }
         else{
-            Article.updateById(req.body, id, function(err, result, fields){
-                if(err){
-                    return res.status(500).json({
-                        msg: "Internal server error",
-                        data: err
-                    });
-                }
-                else{
-                    return res.status(200).json({
-                        msg: "Successfully Saved!" 
-                    });
-                }
-            });
-        }
-    },
-    delete: function(req, res){
-        var id = req.params.id;
-
-        Article.deleteById(id, function(err, result, fields){
-
-            if(err){
+            await Article.updateById(req.body, id).then(function(result){
+                return res.status(200).json({
+                    msg: "Successfully Saved!" 
+                });
+            }).catch(function(err){
                 return res.status(500).json({
                     msg: "Internal server error",
                     data: err
                 });
-            }
-            else{
+            });
+        }
+    },
+    delete: async function(req, res){
+        var id = req.params.id;
+
+        await Article.deleteById(id).then(function(result){
+            
                 return res.status(200).json({
-                    msg: "Successfully Deleted!" 
+                    msg: "Successfully Deleted!"
                 });
-            }
+                
+        }).catch(function(err){
+            return res.status(500).json({
+                msg: "Internal server error",
+                data: err
+            });
         });
     }
 }
