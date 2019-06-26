@@ -1,6 +1,23 @@
 <%- include(layout + '/start') %>
     <meta name="csrf-token" content="<%= csrfToken %>">
 <%- include(layout + '/content') %>
-
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="/admin/articles/create" class="btn btn-secondary">New</a>
+                </div>
+            </div>
+            <% articles.forEach( article =>{ %>
+            <hr>
+            <div class="row">
+                <div class="col-md-3"><%= article.title %></div>
+                <div class="col-md-3">
+                    <a href="/admin/articles/<%= article.id %>" class="btn btn-secondary">Edit</a>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
 <%- include(layout + '/script') %>
 <%- include(layout + '/end') %>

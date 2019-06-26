@@ -6,37 +6,37 @@
         <div class="form-group row">
             <label for="" class="col-md-3 col-form-label">Thumbnail</label>
             <div class="col-md-9">
-                <input type="text" class="form-control" id="" value="" name="thumbnail">
+                <input type="text" class="form-control" id="" value="<%= (typeof article != 'undefined') ? article.thumbnail:'' %>" name="thumbnail">
             </div>
         </div>
         <div class="form-group row">
             <label for="" class="col-md-3 col-form-label">Title</label>
             <div class="col-md-9">
-                <input type="text" class="form-control" id="" value="" name="title">
+                <input type="text" class="form-control" id="" value="<%= (typeof article != 'undefined') ? article.title:'' %>" name="title">
             </div>
         </div>
         <div class="form-group row">
             <label for="" class="col-md-3 col-form-label">Slug</label>
             <div class="col-md-9">
-                <input type="text" class="form-control" id="" value="" name="slug">
+                <input type="text" class="form-control" id="" value="<%= (typeof article != 'undefined') ? article.slug:'' %>" name="slug">
             </div>
         </div>
         <div class="form-group row">
             <label for="" class="col-md-3 col-form-label">Meta Keyword</label>
             <div class="col-md-9">
-                <input type="text" class="form-control" id="" value="" name="meta_keyword">
+                <input type="text" class="form-control" id="" value="<%= (typeof article != 'undefined') ? article.meta_keyword:'' %>" name="meta_keyword">
             </div>
         </div>
         <div class="form-group row">
             <label for="" class="col-md-3 col-form-label">Meta Description</label>
             <div class="col-md-9">
-                <input type="text" class="form-control" id="" value="" name="meta_description">
+                <input type="text" class="form-control" id="" value="<%= (typeof article != 'undefined') ? article.meta_description:'' %>" name="meta_description">
             </div>
         </div>
         <div class="form-group row">
             <label for="" class="col-md-3 col-form-label">Content</label>
             <div class="col-md-9">
-                <textarea class="form-control" id="" name="content"></textarea>
+                <textarea class="form-control" id="" name="content"><%= (typeof article != 'undefined') ? article.content:'' %></textarea>
             </div>
         </div>
         <div class="form-group row">
@@ -56,19 +56,32 @@
                 $(".error").remove();
 
                 $.ajax({
-					url: "<%= linkTo.createArticle %>",
-					type: "POST",
+					url: "<%= (typeof article != 'undefined') ? linkTo.editArticle : linkTo.createArticle %>",
+					type: "<%= (typeof article != 'undefined') ? 'PUT' : 'POST' %>",
 					data: new FormData(this),
 					contentType: false,
 					cache: false,
 					processData: false,
 					beforeSend: function(){
-                        
+                        Swal.showLoading();
 					},
 					success: function(data){
-                        
+                            Swal.fire({
+                                type: 'success',
+                                title: 'Your work has been saved',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(function(){
+                                window.location.href = "<%= linkTo.listArticle %>";
+                            });
 					},
 					error: function(xhr){
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                            footer: '<a href>Why do I have this issue?</a>'
+                        });
                         let errors = validator.render(xhr);
                         for(var key in errors){
                             var html=``;

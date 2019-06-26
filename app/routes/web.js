@@ -17,10 +17,19 @@ module.exports = function(app){
 
         app.use('/articles', (function(){
 
+
             app.get('/', AdminArticle.index);
+
             app.route('/create')
                 .get(AdminArticle.create)
                 .post(AdminArticle.store);
+
+
+            app.route('/:id(\\d{0,})')
+                .get(AdminArticle.edit)
+                .put(AdminArticle.update);
+
+            
 
 
 

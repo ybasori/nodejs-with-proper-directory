@@ -14,5 +14,8 @@ module.exports = {
         var base_url = Config.baseUrl + port;
         
         return base_url+"/"+uri;
+    },
+    offset: function(limit, page){
+        return (page - 1) * limit;
     }
 }
