@@ -6,4 +6,5 @@
 - accept FormData in route web
 - create public, secrets, and storage directory automatically when npm start
 - using mysql db
-- validator is-required and is-unique
+- validator is-required, is-unique, and email
+- user session
