@@ -10,5 +10,9 @@ module.exports = {
     },
     getById: async function(id){
         return await db.query(`SELECT * FROM ${table_user} WHERE id="${id}" LIMIT 1`);
+    },
+    update: async function(data, id){
+        data.updated_at = dt.now();
+        return await db.query(`UPDATE ${table_user} SET ? WHERE id='${id}'`, data);
     }
 }

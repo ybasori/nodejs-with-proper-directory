@@ -15,7 +15,12 @@ const validator = {
 
 const navMenu = {
     init: function(){
-        var uri = window.location.pathname.split("/");
-        $(".global-menu-"+uri[1]).addClass("active");
+        var uris = window.location.pathname.split("/");
+        var i=0;
+        uris.forEach(function(value, key){
+            if(key!=0){
+                $(".global-menu-"+value).addClass("active");
+            }
+        });
     }
 }

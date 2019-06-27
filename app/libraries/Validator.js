@@ -82,6 +82,27 @@ module.exports={
                         }
                     }
                 }
+                else if(keyRule == "equalsTo"){
+                    if(rule.rule[keyRule]){
+
+                        var value2 = body[rule.rule[keyRule]];
+
+                        var key2 = rule.rule[keyRule];
+
+                        var label2 = (rules[key2].label == null || rules[key2].label == undefined || rules[key2].label == "") ? key2 : rules[key2].label ;
+
+                        if(body[key] != value2){
+                            if(noRule == 0){
+                                err_msg[key] = [];
+                            }
+
+
+                            err_msg[key].push(`${label} must be match to ${label2}.`);
+                            noRule++;
+                            error++;
+                        }
+                    }
+                }
                 else{
                     continue;
                 }

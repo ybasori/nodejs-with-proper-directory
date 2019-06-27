@@ -11,6 +11,7 @@ const AuthCheckReverse = require(`${Config.dir.middleware}/AuthCheckReverse.js`)
 const AdminArticle   = require(`${Config.dir.controller}/ArticleController.js`);
 const AuthController = require(`${Config.dir.controller}/AuthController.js`);
 const HomeController = require(`${Config.dir.controller}/HomeController.js`);
+const SettingController = require(`${Config.dir.controller}/SettingController.js`);
 
 
 module.exports = function(app){
@@ -26,15 +27,27 @@ module.exports = function(app){
             .get(AuthController.login)
             .post(AuthController.authenticate);
 
+        // SETTING ACCOUNT
+
+        app.use('/settings', [AuthCheck], (function(){
+
+            app.route('/account')
+                .get(SettingController.account)
+                .put(SettingController.accountUpdate);
+
+            app.route('/profile')
+                .get(SettingController.profile)
+                .put(SettingController.profileUpdate);
+
+            return app;
+        })());
+
 
         // ARTICLES
 
-        app.all('/articles*', [AuthCheck]);
+        app.get('/articles', [AuthCheck], AdminArticle.index);
 
-        app.route('/articles')
-            .get(AdminArticle.index);
-
-        app.use('/articles', (function(){
+        app.use('/articles', [AuthCheck], (function(){
 
             app.route('/create')
                 .get(AdminArticle.create)
@@ -49,6 +62,8 @@ module.exports = function(app){
 
             return app;
         })());
+
+        
 
         
         
