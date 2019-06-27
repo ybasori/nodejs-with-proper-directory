@@ -12,3 +12,10 @@ const validator = {
         }
     }
 }
+
+const navMenu = {
+    init: function(){
+        var uri = window.location.pathname.split("/");
+        $(".global-menu-"+uri[1]).addClass("active");
+    }
+}

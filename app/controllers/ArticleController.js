@@ -25,7 +25,7 @@ module.exports = {
         var page = 1;
         var offset = Helper.offset(limit,page);
 
-        await Article.getAll("id, title", limit, offset).then(function(result){ data.articles = result; });
+        await Article.getAllByUserId("id, title, created_at, updated_at", req.session.userId, limit, offset).then(function(result){ data.articles = result; });
 
 
         return res.render(`${Config.dir.view}/pages/article/index`, data);
@@ -88,6 +88,10 @@ module.exports = {
                 }
             }
         }
+
+        var data = req.body;
+        delete data._csrf;
+        data.user_id = req.session.userId;
 
         let validator = await Validator.make(req.body, rules);
         if(validator.fails()){
@@ -167,6 +171,8 @@ module.exports = {
             }
         }
 
+        var data = req.body;
+        delete data._csrf;
         let validator = await Validator.make(req.body, rules);
         if(validator.fails()){
             return res.status(400).json({
@@ -174,10 +180,40 @@ module.exports = {
             });
         }
         else{
-            await Article.updateById(req.body, id).then(function(result){
-                return res.status(200).json({
-                    msg: "Successfully Saved!" 
+            let permission = false;
+            await Article.checkUserId(id, req.session.userId).then(function(result){ permission = result.length>0 ; });
+            if(permission){
+                await Article.updateById(req.body, id).then(function(result){
+                    return res.status(200).json({
+                        msg: "Successfully Saved!" 
+                    });
+                }).catch(function(err){
+                    return res.status(500).json({
+                        msg: "Internal server error",
+                        data: err
+                    });
                 });
+            }
+            else{
+                return res.status(500).json({
+                    msg: "Permission denied!"
+                });
+            }
+        }
+    },
+    delete: async function(req, res){
+        var id = req.params.id;
+
+        let permission = false;
+        await Article.checkUserId(id, req.session.userId).then(function(result){ permission = result.length>0 ; });
+
+        if(permission){
+            await Article.deleteById(id).then(function(result){
+                
+                    return res.status(200).json({
+                        msg: "Successfully Deleted!"
+                    });
+                    
             }).catch(function(err){
                 return res.status(500).json({
                     msg: "Internal server error",
@@ -185,21 +221,10 @@ module.exports = {
                 });
             });
         }
-    },
-    delete: async function(req, res){
-        var id = req.params.id;
-
-        await Article.deleteById(id).then(function(result){
-            
-                return res.status(200).json({
-                    msg: "Successfully Deleted!"
-                });
-                
-        }).catch(function(err){
+        else{
             return res.status(500).json({
-                msg: "Internal server error",
-                data: err
+                msg: "Permission denied!"
             });
-        });
+        }
     }
 }

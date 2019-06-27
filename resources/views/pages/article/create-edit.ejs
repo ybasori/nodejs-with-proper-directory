@@ -79,7 +79,7 @@
                         Swal.fire({
                             type: 'error',
                             title: 'Oops...',
-                            text: 'Something went wrong!',
+                            text: xhr.responseJSON.msg,
                             footer: '<a href>Why do I have this issue?</a>'
                         });
                         let errors = validator.render(xhr);

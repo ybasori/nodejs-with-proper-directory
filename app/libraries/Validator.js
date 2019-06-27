@@ -32,6 +32,9 @@ module.exports={
                             error++;
                         }
                     }
+                    else{
+                        continue;
+                    }
 
                 }
                 else if(keyRule=="unique"){
@@ -60,7 +63,24 @@ module.exports={
                         });
 
                     }
+                    else{
+                        continue;
+                    }
                     
+                }
+                else if(keyRule == "email"){
+                    if(rule.rule[keyRule]){
+                        var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+                        if(!re.test(body[key].toLowerCase().trim())){
+                            if(noRule == 0){
+                                err_msg[key] = [];
+                            }
+                            err_msg[key].push(`${label} is invalid.`);
+                            noRule++;
+                            error++;
+                        }
+                    }
                 }
                 else{
                     continue;
