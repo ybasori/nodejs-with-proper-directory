@@ -36,10 +36,9 @@ app.use("/sweetalert2", express.static(`${__dirname}/node_modules/sweetalert2`))
 // LISTED IN ROUTES
 const routes_web     = require(`${__dirname}/app/routes/web.js`)(express.Router());
 const routes_api     = require(`${__dirname}/app/routes/api.js`)(express.Router());
-const middleware     = require(`${__dirname}/app/middlewares/web_middleware.js`);
-const middleware_api = require(`${__dirname}/app/middlewares/api_middleware.js`);
-app.use('/api', middleware_api, routes_api);
-app.use('/', middleware, routes_web);
+const middleware     = require(`${__dirname}/app/middlewares/middleware.js`);
+app.use('/api', middleware.web, routes_api);
+app.use('/', middleware.web, routes_web);
 
 
 

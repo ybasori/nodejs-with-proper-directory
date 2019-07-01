@@ -17,12 +17,26 @@ module.exports = async function(req, res, next){
                     return res.redirect("/home");
                 }
                 else{
-                    return res.redirect("/login");
+                    if(req.method != "GET"){
+                        return res.status(401).json({
+                            msg: "Unauthorized!"
+                        });
+                    }
+                    else{
+                        return res.redirect("/login");
+                    }
                 }
             });
         }
     }
     else{
-        return res.redirect("/login");
+        if(req.method != "GET"){
+            return res.status(401).json({
+                msg: "Unauthorized!"
+            });
+        }
+        else{
+            return res.redirect("/login");
+        }
     }
 }
