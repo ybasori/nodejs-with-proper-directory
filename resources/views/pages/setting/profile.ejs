@@ -13,13 +13,13 @@
                                         <div class="form-group row">
                                             <label for="" class="col-md-3 col-form-label">Name</label>
                                             <div class="col-md-9">
-                                                <input type="text" class="form-control" id="" value="<%= (typeof profile != 'undefined') ? profile.name:'' %>" name="name">
+                                                <input type="text" class="form-control" id="" value="<%= (typeof dataProfile != 'undefined') ? dataProfile.name:'' %>" name="name">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="" class="col-md-3 col-form-label">Username</label>
                                             <div class="col-md-9">
-                                                <input type="text" class="form-control" id="" value="<%= (typeof profile != 'undefined') ? profile.username:'' %>" name="username">
+                                                <input type="text" class="form-control" id="" value="<%= (typeof dataProfile != 'undefined') ? dataProfile.username:'' %>" name="username">
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -39,5 +39,51 @@
     </div>
 <%- include(layout + '/script') %>
 <script>
+    (function(){
+        $("#form").on("submit", function(e){
+            e.preventDefault();
+
+            
+            $(".error").remove();
+
+            $.ajax({
+                url: "/settings/profile",
+                type: "PUT",
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function(){
+                    Swal.showLoading();
+                },
+                success: function(data){
+                        Swal.fire({
+                            type: 'success',
+                            title: 'Your work has been saved',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function(){
+                            window.location.reload();
+                        });
+                },
+                error: function(xhr){
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: xhr.responseJSON.msg,
+                        footer: '<a href>Why do I have this issue?</a>'
+                    });
+                    let errors = validator.render(xhr);
+                    for(var key in errors){
+                        var html=``;
+                        for(var i=0;i<errors[key].length; i++){
+                            html=html+`<li>${errors[key][i]}</li>`;
+                        }
+                        $(`[name="${key}"]`).parent().append(`<div class="error alert alert-danger"><ul>${html}</ul></div>`);
+                    }
+                }
+            });
+        });
+    })();
 </script>
 <%- include(layout + '/end') %></div>

@@ -7,6 +7,7 @@ const Validator = require(`../libraries/Validator.js`);
 
 // MODEL
 const User = require(`${Config.dir.model}/User.js`);
+const Profile = require(`${Config.dir.model}/Profile.js`);
 
 
 
@@ -77,14 +78,38 @@ module.exports = {
             });
         }
     },
-    profile : function(req, res){
+    profile : async function(req, res){
         var data = {
             csrfToken: req.csrfToken(),
             layout:`${Config.dir.view}/layouts/setting`
         }
+        let dataProfile = null;
+
+        await Profile.getByUserId(req.session.userId).then(function(result){ dataProfile = result[0] });
+
+        data.dataProfile = dataProfile;
+
         return res.render(`${Config.dir.view}/pages/setting/profile`,data);
     },
-    profileUpdate : function(req, res){
+    profileUpdate : async function(req, res){
+        var rules = {
+            name: {
+                label: "Name",
+                rule :{
+                    required : true
+                }
+            }
+        }
 
+        let validator = await Validator.make(req.body, rules);
+        if(validator.fails()){
+            return res.status(400).json({
+                msg: "Something went wrong!",
+                errors: validator.getMessages()
+            });
+        }
+        else{
+
+        }
     }
 }
