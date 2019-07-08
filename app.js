@@ -30,6 +30,7 @@ app.use("/bootstrap", express.static(`${__dirname}/node_modules/bootstrap`));
 app.use("/jquery", express.static(`${__dirname}/node_modules/jquery`));
 app.use("/popper.js", express.static(`${__dirname}/node_modules/popper.js`));
 app.use("/sweetalert2", express.static(`${__dirname}/node_modules/sweetalert2`));
+app.use("/fontawesome", express.static(`${__dirname}/node_modules/@fortawesome/fontawesome-free`));
 
 
 
