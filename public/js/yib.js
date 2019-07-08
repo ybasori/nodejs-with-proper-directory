@@ -92,8 +92,9 @@ const yib={
                 $("form#yib-uploader-get-image [name='"+key+"']").parent().append(`<div class="error alert alert-danger">${html}</div>`);
             }
         }
-
-        console.log(err);
+        else{
+            
+        }
     },
     init: function(){
         $(".yib-uploader").on("click", this.openCard);
