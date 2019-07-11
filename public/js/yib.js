@@ -2,7 +2,8 @@ let yib_var={
     storageUrl: null,
     activeNav: "yib-uploader-link-tab",
     collectionPage: 1,
-    collectionLimit: 1
+    collectionLimit: 1,
+    target: null
 }
 const yib={
     openCard: function(){
@@ -79,8 +80,8 @@ const yib={
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close-card">Close</button>
+                        <button type="button" class="btn btn-primary" id="insert-selected" disabled >Insert</button>
                     </div>
                 </div>
             </div>
@@ -89,12 +90,14 @@ const yib={
         else{
             
         }
+        yib_var.target = $(this).data("target");
         $("#yib-modal-uploader").modal("show");
     },
     closeCard: function(){
         $("#yib-modal-uploader #result").html("");
         $("#yib-modal-uploader #yib-uploader-link-tab").click();
         yib_var.storageUrl = null;
+        $("#yib-modal-uploader #insert-selected").attr("disabled","");
     },
     formInsertLinkImage: function(e){
         e.preventDefault();
@@ -177,11 +180,13 @@ const yib={
     resetStorageUrl: function(){
         if(yib_var.activeNav != $(this).attr("id")){
             yib_var.storageUrl = null;
+            $("#yib-modal-uploader #insert-selected").attr("disabled","");
         }
         $("#yib-modal-uploader #result").html((yib_var.storageUrl!=null)?"<img src=\"/"+yib_var.storageUrl+"\" style=\"width: 300px\">":"");
         yib_var.activeNav = $(this).attr("id");
 
         if($(this).attr("id")=="yib-uploader-upload-tab"){
+            $("#yib-modal-uploader #all-photos").html("");
             $.ajax({
                 url: "/get-my-image/"+yib_var.collectionLimit+"/"+yib_var.collectionPage,
                 type: "GET",
@@ -203,6 +208,7 @@ const yib={
         $("#yib-modal-uploader .item-photo").attr("style", "");
         $(this).attr("style", "background-color: #ccc;");
         yib_var.storageUrl = $(this).data("url");
+        $("#yib-modal-uploader #insert-selected").removeAttr("disabled");
     },
     uploadForm: function(e){
         e.preventDefault();
@@ -240,6 +246,11 @@ const yib={
             });
         }
     },
+    insertToTarget: function(){
+        $(yib_var.target).val(yib_var.storageUrl);
+        $("#yib-modal-uploader").modal('hide');
+        $("#yib-modal-uploader #close-card").click();
+    },
     init: function(){
         $(".yib-uploader").on("click", this.openCard);
         $("body").on("hide.bs.modal", "#yib-modal-uploader", this.closeCard);
@@ -247,5 +258,6 @@ const yib={
         $("body").on("click", "#yib-modal-uploader .nav-link", this.resetStorageUrl);
         $("body").on("click","#yib-modal-uploader .item-photo", this.selectedPhoto);
         $("body").on("submit","#yib-modal-uploader #upload-form", this.uploadForm);
+        $("body").on("click", "#yib-modal-uploader #insert-selected", this.insertToTarget)
     }
 }

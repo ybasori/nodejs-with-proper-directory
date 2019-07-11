@@ -15,9 +15,9 @@
                                             <div class="col-md-9">
                                                 
                                                 <div class="input-group mb-2">
-                                                    <input type="text" class="form-control" id="" value="<%= (typeof dataProfile != 'undefined') ? dataProfile.photo:'' %>" name="photo" disabled>
+                                                    <input type="text" class="form-control" id="photo" value="<%= (typeof dataProfile != 'undefined') ? dataProfile.photo:'' %>" name="photo" readonly>
                                                     <div class="input-group-append">
-                                                        <button type="button" class="btn btn-secondary yib-uploader"><i class="fas fa-image"></i></button>
+                                                        <button type="button" class="btn btn-secondary yib-uploader" data-target="#photo"><i class="fas fa-image"></i></button>
                                                     </div>
                                                 </div>
                                             </div>
