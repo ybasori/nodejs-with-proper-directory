@@ -12,6 +12,7 @@ const AdminArticle   = require(`${Config.dir.controller}/ArticleController.js`);
 const AuthController = require(`${Config.dir.controller}/AuthController.js`);
 const HomeController = require(`${Config.dir.controller}/HomeController.js`);
 const SettingController = require(`${Config.dir.controller}/SettingController.js`);
+const GenController = require(`${Config.dir.controller}/GenController.js`);
 
 
 module.exports = function(app){
@@ -26,6 +27,11 @@ module.exports = function(app){
         app.route('/login')
             .get(AuthController.login)
             .post(AuthController.authenticate);
+
+        // UPLOAD
+        app.post("/save-image", [AuthCheck], GenController.saveImage);
+        app.get("/get-my-image/:limit/:page", [AuthCheck], GenController.getMyImage);
+        app.post("/upload-image", [AuthCheck], GenController.uploadImage);
 
         // SETTING ACCOUNT
 
