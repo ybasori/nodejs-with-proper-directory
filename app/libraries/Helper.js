@@ -17,5 +17,8 @@ module.exports = {
     },
     offset: function(limit, page){
         return (page - 1) * limit;
+    },
+    stripWords: function(string){
+        return string.toLowerCase().trim().replace(/[^\w\s]/gi, '').split(" ").join("-");
     }
 }

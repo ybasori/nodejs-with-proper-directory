@@ -1,11 +1,12 @@
-let yib_var={
-    storageUrl: null,
-    activeNav: "yib-uploader-link-tab",
-    collectionPage: 1,
-    collectionLimit: 1,
-    target: null
-}
-const yib={
+const yibUpload={
+    variable: {
+            storageUrl: null,
+            activeNav: "yib-uploader-link-tab",
+            collectionPage: 1,
+            collectionLimit: 10,
+            collectionTotalPage: 0,
+            target: null
+    },
     openCard: function(){
         if(typeof $("#yib-modal-uploader").html() == "undefined"){
             $("body").prepend(`<div class="modal" id="yib-modal-uploader" tabindex="-1" role="dialog">
@@ -90,13 +91,13 @@ const yib={
         else{
             
         }
-        yib_var.target = $(this).data("target");
+        yibUpload.variable.target = $(this).data("target");
         $("#yib-modal-uploader").modal("show");
     },
     closeCard: function(){
         $("#yib-modal-uploader #result").html("");
         $("#yib-modal-uploader #yib-uploader-link-tab").click();
-        yib_var.storageUrl = null;
+        yibUpload.variable.storageUrl = null;
         $("#yib-modal-uploader #insert-selected").attr("disabled","");
     },
     formInsertLinkImage: function(e){
@@ -178,17 +179,16 @@ const yib={
         }
     },
     resetStorageUrl: function(){
-        if(yib_var.activeNav != $(this).attr("id")){
-            yib_var.storageUrl = null;
-            $("#yib-modal-uploader #insert-selected").attr("disabled","");
-        }
-        $("#yib-modal-uploader #result").html((yib_var.storageUrl!=null)?"<img src=\"/"+yib_var.storageUrl+"\" style=\"width: 300px\">":"");
-        yib_var.activeNav = $(this).attr("id");
+        
+        yibUpload.variable.storageUrl = null;
+        $("#yib-modal-uploader #insert-selected").attr("disabled","");
+        
+        yibUpload.variable.activeNav = $(this).attr("id");
 
         if($(this).attr("id")=="yib-uploader-upload-tab"){
             $("#yib-modal-uploader #all-photos").html("");
             $.ajax({
-                url: "/get-my-image/"+yib_var.collectionLimit+"/"+yib_var.collectionPage,
+                url: "/get-my-image/"+yibUpload.variable.collectionLimit+"/"+yibUpload.variable.collectionPage,
                 type: "GET",
                 beforeSend: function(){
                     
@@ -197,6 +197,11 @@ const yib={
                     data.data.data.forEach((value, key)=>{
                         $("#yib-modal-uploader #all-photos").append("<div class=\"col-md-3 item-photo\" data-url=\""+value.name+"\"><img class=\"img-fluid\" src=\"/"+value.name+"\"></div>");
                     });
+                    var total = data.data.total;
+                    var limit = yibUpload.variable.collectionLimit;
+                    yibUpload.variable.collectionTotalPage = Math.ceil(total/limit)
+
+                    $("#yib-modal-uploader #page-collection").text(`${yibUpload.variable.collectionPage}/${yibUpload.variable.collectionTotalPage}`);
                 },
                 error: function(xhr){
                     
@@ -207,7 +212,7 @@ const yib={
     selectedPhoto: function(){
         $("#yib-modal-uploader .item-photo").attr("style", "");
         $(this).attr("style", "background-color: #ccc;");
-        yib_var.storageUrl = $(this).data("url");
+        yibUpload.variable.storageUrl = $(this).data("url");
         $("#yib-modal-uploader #insert-selected").removeAttr("disabled");
     },
     uploadForm: function(e){
@@ -233,6 +238,8 @@ const yib={
                     }).then(function(){
 
                         $("#yib-modal-uploader #upload-form")[0].reset();
+                        yibUpload.variable.collectionPage = 1;
+                        $("#yib-modal-uploader #"+yibUpload.variable.activeNav).click();
                     });
                 },
                 error: function(xhr){
@@ -247,9 +254,25 @@ const yib={
         }
     },
     insertToTarget: function(){
-        $(yib_var.target).val(yib_var.storageUrl);
+        $(yibUpload.variable.target).val(yibUpload.variable.storageUrl);
         $("#yib-modal-uploader").modal('hide');
         $("#yib-modal-uploader #close-card").click();
+    },
+    nextCollection: function(){
+
+        if((yibUpload.variable.collectionPage + 1) <= yibUpload.variable.collectionTotalPage){
+            yibUpload.variable.collectionPage = yibUpload.variable.collectionPage + 1;
+            $("#yib-modal-uploader #"+yibUpload.variable.activeNav).click();
+        }
+
+    },
+    prevCollection: function(){
+
+        if((yibUpload.variable.collectionPage - 1) >= 1){
+            yibUpload.variable.collectionPage = yibUpload.variable.collectionPage - 1;
+            $("#yib-modal-uploader #"+yibUpload.variable.activeNav).click();
+        }
+
     },
     init: function(){
         $(".yib-uploader").on("click", this.openCard);
@@ -258,6 +281,8 @@ const yib={
         $("body").on("click", "#yib-modal-uploader .nav-link", this.resetStorageUrl);
         $("body").on("click","#yib-modal-uploader .item-photo", this.selectedPhoto);
         $("body").on("submit","#yib-modal-uploader #upload-form", this.uploadForm);
-        $("body").on("click", "#yib-modal-uploader #insert-selected", this.insertToTarget)
+        $("body").on("click", "#yib-modal-uploader #insert-selected", this.insertToTarget);
+        $("body").on("click", "#yib-modal-uploader #next-collection", this.nextCollection);
+        $("body").on("click", "#yib-modal-uploader #prev-collection", this.prevCollection);
     }
 }

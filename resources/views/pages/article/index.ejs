@@ -8,22 +8,71 @@
                     <a href="<%= linkTo.createArticle %>" class="btn btn-secondary">New</a>
                 </div>
             </div>
-            <% articles.forEach( article =>{ %>
-            <hr>
-            <div class="row">
-                <div class="col-md-3"><%= article.title %></div>
-                <div class="col-md-3">
-                        <a href="<%= linkTo.listArticle %>/<%= article.id %>" class="btn btn-secondary">Edit</a>
-                        <button type="button" class="btn btn-secondary btn-delete" data-id="<%= article.id %>">Delete</button>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <table id="list-table"></table>
                 </div>
             </div>
-            <% }) %>
         </div>
     </div>
 <%- include(layout + '/script') %>
 <script>
     (function(){
-        $(".btn-delete").on("click", function(){
+         var table=$('#list-table').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url : "/articles/get-items"
+            },
+            "order": [[ 3, "desc" ]],
+            "columns" : [
+                {
+                    title: "No.",
+                    data: "id",
+                    orderable: false,
+                    searchable: false,
+                    width: "1%",
+                    render    : function(data, type, row, meta){
+                        return meta.row + meta.settings._iDisplayStart + 1+".";
+                    }
+                },
+                {
+                    data: 'title',
+                    title: 'Title',
+                    name: 'title'
+                },
+                {
+                    data: 'created_at',
+                    title: 'Created At',
+                    name: 'created_at'
+                },
+                
+                {
+                    data: 'updated_at',
+                    title: 'Updated At',
+                    name: 'updated_at'
+                },
+                {
+                    data: 'id',
+                    title: 'Action',
+                    name: 'id',
+                    orderable: false,
+                    searchable: false,
+                    render    : function(data, type, row, meta){
+                        return `
+                        <a href="/articles/${data}" class="btn btn-secondary">Edit</a>
+                        <button type="button" class="btn btn-secondary btn-delete" data-id="${data}">Delete</button>
+                        `;
+                    }
+                }
+            ],
+            
+            
+        });
+
+
+
+        $("#list-table").on("click", ".btn-delete", function(){
             var id = $(this).data('id');
             Swal.fire({
                 title: 'Are you sure?',
@@ -56,7 +105,7 @@
                                     showConfirmButton: false,
                                     timer: 1500
                                 }).then(function(){
-                                    window.location.reload();
+                                    table.ajax.reload();
                                 });
                         },
                         error: function(xhr){
@@ -71,6 +120,7 @@
                 }
             });
         });
+    
     })();
 </script>
 <%- include(layout + '/end') %>

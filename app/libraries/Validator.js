@@ -103,6 +103,21 @@ module.exports={
                         }
                     }
                 }
+                else if(keyRule == "customWithRegex"){
+                    if((typeof rule.rule[keyRule].regex != "undefined") && (typeof rule.rule[keyRule].message != "undefined")){
+                        var re = eval("/"+rule.rule[keyRule].regex+"/i");
+
+                        if(!re.test(body[key].trim())){
+                            if(noRule == 0){
+                                err_msg[key] = [];
+                            }
+                            var new_message = rule.rule[keyRule].message.replace("%s", label);
+                            err_msg[key].push(new_message);
+                            noRule++;
+                            error++;
+                        }
+                    }
+                }
                 else{
                     continue;
                 }

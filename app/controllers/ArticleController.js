@@ -31,6 +31,9 @@ module.exports = {
         return res.render(`${Config.dir.view}/pages/article/index`, data);
         
     },
+    getItems: async function(req, res){
+        return res.status(200).json(await Article.datatable(req.query, { user_id: req.session.userId }));
+    },
     create: async function (req, res) {
 
 
@@ -54,13 +57,6 @@ module.exports = {
                 label: "Title",
                 rule :{
                     required: true
-                }
-            },
-            slug: {
-                label: "Slug",
-                rule: {
-                    required: true,
-                    unique: "articles,slug"
                 }
             },
             thumbnail: {
@@ -100,6 +96,24 @@ module.exports = {
             });
         }
         else{
+            let slug = Helper.stripWords(data.title);
+            let dataArticle = null
+            await Article.getBySlug("*", slug).then(function(result){ dataArticle = result[0]; });
+
+            if(typeof dataArticle != "undefined"){
+
+                let lastRow = null;
+                await Article.getLastRow("*").then(function(result){ lastRow = result[0]; });
+
+                let lastId = lastRow.id;
+
+                slug = slug + "-" + lastId;
+
+            }
+
+            data.slug = slug;
+
+
             await Article.save(req.body).then(function(result){
                 return res.status(200).json({
                     msg: "Successfully Saved!" 
@@ -136,13 +150,6 @@ module.exports = {
                 label: "Title",
                 rule: {
                     required: true
-                }
-            },
-            slug: {
-                label: "Slug",
-                rule:{
-                    required: true,
-                    unique: "articles,slug,"+req.params.id+",id"
                 }
             },
             thumbnail: {
@@ -182,8 +189,32 @@ module.exports = {
         else{
             let permission = false;
             await Article.checkUserId(id, req.session.userId).then(function(result){ permission = result.length>0 ; });
+
+
+
             if(permission){
-                await Article.updateById(req.body, id).then(function(result){
+
+
+                let slug = Helper.stripWords(data.title);
+                let dataArticle = null
+                await Article.getBySlug("*", slug).then(function(result){ dataArticle = result[0]; });
+
+                if(typeof dataArticle != "undefined" && dataArticle.id != id){
+
+                    let lastRow = null;
+                    await Article.getLastRow("*").then(function(result){ lastRow = result[0]; });
+
+                    let lastId = lastRow.id;
+
+                    slug = slug + "-" + lastId;
+
+                }
+
+                data.slug = slug;
+
+
+
+                await Article.updateById(data, id).then(function(result){
                     return res.status(200).json({
                         msg: "Successfully Saved!" 
                     });

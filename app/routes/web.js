@@ -13,6 +13,7 @@ const AuthController = require(`${Config.dir.controller}/AuthController.js`);
 const HomeController = require(`${Config.dir.controller}/HomeController.js`);
 const SettingController = require(`${Config.dir.controller}/SettingController.js`);
 const GenController = require(`${Config.dir.controller}/GenController.js`);
+const ErrorController = require(`${Config.dir.controller}/ErrorController.js`);
 
 
 module.exports = function(app){
@@ -20,61 +21,67 @@ module.exports = function(app){
         app.get("/", [AuthCheck], HomeController.index);
 
 
+
         // LOGIN
 
         app.all('/login', [AuthCheckReverse]);
-
         app.route('/login')
             .get(AuthController.login)
             .post(AuthController.authenticate);
 
-        // UPLOAD
+
+
+
+        // UPLOAD IMAGE
         app.post("/save-image", [AuthCheck], GenController.saveImage);
         app.get("/get-my-image/:limit/:page", [AuthCheck], GenController.getMyImage);
         app.post("/upload-image", [AuthCheck], GenController.uploadImage);
 
+
+
+
         // SETTING ACCOUNT
+        app.all('/settings/account', [AuthCheck]);
+        app.route('/settings/account')
+            .get(SettingController.account)
+            .put(SettingController.accountUpdate);
 
-        app.use('/settings', [AuthCheck], (function(){
+        app.all('/settings/profile', [AuthCheck]);
+        app.route('/settings/profile')
+            .get(SettingController.profile)
+            .put(SettingController.profileUpdate);
 
-            app.route('/account')
-                .get(SettingController.account)
-                .put(SettingController.accountUpdate);
 
-            app.route('/profile')
-                .get(SettingController.profile)
-                .put(SettingController.profileUpdate);
 
-            return app;
-        })());
 
 
         // ARTICLES
 
         app.get('/articles', [AuthCheck], AdminArticle.index);
 
-        app.use('/articles', [AuthCheck], (function(){
+        app.get('/articles/get-items', [AuthCheck], AdminArticle.getItems);
 
-            app.route('/create')
-                .get(AdminArticle.create)
-                .post(AdminArticle.store);
+        app.all('/articles/create', [AuthCheck]);
+        app.route('/articles/create')
+            .get(AdminArticle.create)
+            .post(AdminArticle.store);
+
+        app.all('/articles/:id', [AuthCheck]);
+        app.route('/articles/:id')
+            .get(AdminArticle.edit)
+            .put(AdminArticle.update)
+            .delete(AdminArticle.delete);
 
 
-            app.route('/:id')
-                .get(AdminArticle.edit)
-                .put(AdminArticle.update)
-                .delete(AdminArticle.delete);
 
 
-            return app;
-        })());
+        // ERRORS
+
+        app.get('*', ErrorController.notFound);
+        app.post('*', ErrorController.notFound);
+        app.put('*', ErrorController.notFound);
+        app.delete('*', ErrorController.notFound);
 
         
-
-        
-        
-
-
-
     return app;
 }

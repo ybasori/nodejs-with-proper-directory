@@ -20,7 +20,7 @@ module.exports = {
 
         let dataUser = null;
 
-        await User.getById(req.session.userId).then(function(result){ dataUser = result[0] });
+        await User.getById("*", req.session.userId).then(function(result){ dataUser = result[0] });
 
         data.dataUser = dataUser;
 
@@ -33,7 +33,8 @@ module.exports = {
                 label: "E-mail",
                 rule :{
                     required : true,
-                    email    : true
+                    email    : true,
+                    unique: "users,email,"+req.session.userId+",id"
                 }
             },
             password: {
@@ -85,7 +86,7 @@ module.exports = {
         }
         let dataProfile = null;
 
-        await Profile.getByUserId(req.session.userId).then(function(result){ dataProfile = result[0] });
+        await Profile.getByUserId("*", req.session.userId).then(function(result){ dataProfile = (result[0]) ? result[0] : undefined });
 
         data.dataProfile = dataProfile;
 
@@ -98,6 +99,17 @@ module.exports = {
                 rule :{
                     required : true
                 }
+            },
+            username: {
+                label: "Username",
+                rule :{
+                    required : true,
+                    customWithRegex: {
+                        regex: "^[a-zA-Z0-9_]*$",
+                        message: "%s can only contain alphanumeric and underscores."
+                    },
+                    unique: "profiles,username,"+req.session.userId+",user_id"
+                }
             }
         }
 
@@ -109,6 +121,24 @@ module.exports = {
             });
         }
         else{
+            var data = req.body;
+            delete data._csrf;
+            let dataProfile = null;
+    
+            await Profile.getByUserId("*", req.session.userId).then(function(result){ dataProfile = (result[0]) ? result[0] : undefined });
+
+            if(dataProfile){
+                await Profile.update(data, req.session.userId).then(res=> {});
+            }
+            else{
+                data.user_id=req.session.userId;
+                await Profile.save(data).then(res=> {});
+            }
+
+            return res.status(200).json({
+                msg: "Successfully saved!"
+            });
+
 
         }
     }

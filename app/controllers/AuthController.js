@@ -41,7 +41,7 @@ module.exports = {
         }
         else{
             let user = null;
-            await User.getByEmail(req.body.email.trim()).then(function(result){ user = ((typeof result[0]=="undefined") ? null : result[0]); });
+            await User.getByEmail("*", req.body.email.trim()).then(function(result){ user = ((typeof result[0]=="undefined") ? null : result[0]); });
 
             if(!user){
                 return res.status(400).json({
