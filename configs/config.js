@@ -18,7 +18,8 @@ module.exports = {
         model      : dir+"/app/models",
         view       : dir+"/resources/views",
         controller : dir+"/app/controllers",
-        middleware : dir+"/app/middlewares"
+        middleware : dir+"/app/middlewares",
+        origin     : dir
     },
     staticDir :[
         {

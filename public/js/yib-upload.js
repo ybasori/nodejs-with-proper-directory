@@ -121,13 +121,13 @@ const yibUpload={
             err.url.push("Image url is invalid.");
             err_total++;
         }
-        else if(!(url.match(/\.(jpeg|jpg|gif|png)$/) != null)){
-            if(typeof err.url == "undefined"){
-                err.url = [];
-            }
-            err.url.push("Image url is invalid.");
-            err_total++;
-        }
+        // else if(!(url.match(/\.(jpeg|jpg|gif|png)$/) != null)){
+        //     if(typeof err.url == "undefined"){
+        //         err.url = [];
+        //     }
+        //     err.url.push("Image url is invalid.");
+        //     err_total++;
+        // }
 
         if(err_total!=0){
             for(var key in err){
@@ -195,7 +195,7 @@ const yibUpload={
                 },
                 success: function(data){
                     data.data.data.forEach((value, key)=>{
-                        $("#yib-modal-uploader #all-photos").append("<div class=\"col-md-3 item-photo\" data-url=\""+value.name+"\"><img class=\"img-fluid\" src=\"/"+value.name+"\"></div>");
+                        $("#yib-modal-uploader #all-photos").append("<div class=\"col-md-3 item-photo mb-1\" data-url=\""+value.name+"\"><img class=\"img-fluid\" src=\"/"+value.nameCache+"\"></div>");
                     });
                     var total = data.data.total;
                     var limit = yibUpload.variable.collectionLimit;

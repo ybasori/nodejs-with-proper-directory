@@ -2,6 +2,8 @@ const db = require(`../libraries/Db.js`);
 
 const dt = require(`../libraries/Date.js`);
 
+const Helper = require(`../libraries/Helper.js`);
+
 const table_article = "articles";
 
 module.exports={
@@ -111,6 +113,14 @@ module.exports={
             query.recordsTotal = response[0].total;
             query.recordsFiltered = response[0].total;
         });
+
+        for(var i = 0; i<query.data.length; i++){
+            if(typeof query.data[i].thumbnail != "undefined"){
+                await Helper.imageCache(query.data[i].thumbnail, 100, 100).then(response=>{
+                    query.data[i].thumbnail = response
+                });
+            }
+        }
         return query;
     }
 }

@@ -4,7 +4,9 @@
 - middleware for route api & web
 - csrf in route web
 - accept FormData in route web
-- create public, secrets, and storage directory automatically when npm start
 - using mysql db
-- validator is-required, is-unique, and email
+- validator
 - user session
+- upload image
+- dataTables
+- image cache

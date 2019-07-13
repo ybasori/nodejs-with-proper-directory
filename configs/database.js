@@ -2,5 +2,6 @@ module.exports={
     host     : 'localhost',
     user     : 'root',
     password : '',
-    database : 'node_app'
+    database : 'node_app',
+    timezone: 'UTC'
   }

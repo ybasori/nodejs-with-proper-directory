@@ -17,6 +17,7 @@ module.exports = {
                 filename: function(req, file, cb){
                     var filename = (new Date).getTime();
                     filename = (filename==null) ? (file.originalname) : (filename + path.extname(file.originalname))
+                    console.log(file.originalname);
                   cb(null,filename);
                 }
             })
