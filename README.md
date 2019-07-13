@@ -10,3 +10,4 @@
 - upload image
 - dataTables
 - image cache
+- ckeditor

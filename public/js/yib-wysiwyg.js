@@ -1,0 +1,5 @@
+const yibWysiwyg = {
+    init: function(){
+        
+    }
+}

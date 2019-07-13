@@ -162,9 +162,10 @@ const yibUpload={
                             <img src="/${data.data}" style="width: 300px">
                         `);
 
-                        storage_url = data.data;
+                        yibUpload.variable.storageUrl = data.data;
 
                         $("#yib-modal-uploader form#yib-uploader-get-image")[0].reset();
+                        $("#yib-modal-uploader #insert-selected").removeAttr("disabled");
                     });
                 },
                 error: function(xhr){
